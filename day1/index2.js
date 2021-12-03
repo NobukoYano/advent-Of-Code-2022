@@ -17,7 +17,7 @@ const calculate = (texts) => {
         }
         previous = parseInt(current);
         return count;
-    }, [0])
+    }, 0)
 };
 
 const fs = require("fs");

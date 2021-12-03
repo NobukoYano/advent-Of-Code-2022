@@ -11,7 +11,7 @@ const calculate = (texts) => {
         }
         lastNumber = parseInt(current);
         return count;
-    }, [0])
+    }, 0)
 };
 
 const fs = require("fs");

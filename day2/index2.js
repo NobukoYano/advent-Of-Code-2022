@@ -1,9 +1,10 @@
 /**
  * day 2 - second
- * @param {Array<number>} texts
+ * @param {Array<string>} inputs
+ * @return {number}
  */
 const calculate = (inputs) => {
-    // Check the number of items which are bigger than previous value
+    // calculate horizontal and depth
     let aim = 0;
     const position = inputs.reduce((acc, item)=>{
         const [direction, number] = item.split(" ");

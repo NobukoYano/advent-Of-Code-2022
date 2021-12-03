@@ -1,6 +1,7 @@
 /**
  * day 1 - first
  * @param {Array<number>} texts
+ * @return {number}
  */
 const calculate = (texts) => {
     // Check the number of items which are bigger than previous value

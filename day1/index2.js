@@ -1,6 +1,7 @@
 /**
  * day2 - second
  * @param {Array<number>} texts
+ * @return {number}
  */
 const calculate = (texts) => {
     // create array of sum

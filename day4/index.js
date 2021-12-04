@@ -53,7 +53,6 @@ const playBingo = (numbers, boards, index) => {
             const rowOpened = board[i].filter((num)=>calledNumbers.includes(num));
             if (rowOpened.length === 5) {
                 hasWon = true;
-                console.log("won - row!!!", board, index, numbersArray[index]);
                 winnerBoards.push(board);
                 break;
             }
@@ -67,7 +66,6 @@ const playBingo = (numbers, boards, index) => {
             })
             if (columnOpened.length === 5) {
                 hasWon = true;
-                console.log("won - column!!!", board, index, numbersArray[index]);
                 winnerBoards.push(board);
                 break;
             }

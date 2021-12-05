@@ -12,16 +12,16 @@ const calculate = (inputs) => {
         if (move[0][0] === move[1][0]) {
             if (move[0][1] < move[1][1]) {
                 for (let i = move[0][1]; i < move[1][1] + 1; i++) {
-                    matrix[i][move[0][0]] = matrix[i][move[0][0]] + 1;
+                    matrix[i][move[0][0]] += 1;
 
                 }
             }
             if (move[0][1] === move[1][1]) {
-                matrix[move[0][1]][move[0][0]] = matrix[move[0][1]][move[0][0]] + 1;
+                matrix[move[0][1]][move[0][0]] += 1;
             }
             if (move[0][1] > move[1][1]) {
                 for (let i = move[1][1]; i < move[0][1] + 1; i++) {
-                    matrix[i][move[0][0]] = matrix[i][move[0][0]] + 1;
+                    matrix[i][move[0][0]] += 1;
                 }
             }
         }
@@ -30,15 +30,15 @@ const calculate = (inputs) => {
         if (move[0][1] === move[1][1]) {
             if (move[0][0] < move[1][0]) {
                 for (let i = move[0][0]; i < move[1][0] + 1; i++) {
-                    matrix[move[0][1]][i] = matrix[move[0][1]][i] + 1;
+                    matrix[move[0][1]][i] += 1;
                 }
             }
             if (move[0][0] === move[1][0]) {
-                matrix[move[0][0]][move[0][1]] = matrix[move[0][0]][move[0][1]] + 1;
+                matrix[move[0][0]][move[0][1]] += 1;
             }
             if (move[0][0] > move[1][0]) {
                 for (let i = move[1][0]; i < move[0][0] + 1; i++) {
-                    matrix[move[0][1]][i] = matrix[move[0][1]][i] + 1;
+                    matrix[move[0][1]][i] += 1;
                 }
             }
         }

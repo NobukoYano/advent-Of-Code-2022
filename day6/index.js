@@ -10,7 +10,6 @@ const calculate = (file, count) => {
     for (let i = 0; i < count; i++) {
         let add = 0;
         for (const [index, num] of arr.entries()) {
-            arr[index] = num - 1;
             if (num === 0) {
                 add += 1;
                 arr[index] = 6;

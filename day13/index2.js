@@ -16,8 +16,8 @@ const calculate = (cordinates, folds) => {
     for (const action of folds) {
         result = fold(action[0], action[1], result);
     }
-    console.log("#### result", result.map((row)=>row.map((num)=>num.toString()).join("")));
-    return result.reduce((acc, curr)=> acc + curr.reduce((acc2, curr2)=> acc2 + (curr2 ? 1 : 0) ,0) ,0);
+    console.log("#### result", result.map((row)=>row.map((num)=>num === 0 ? "." : "#").join("")));
+    return -1;
 };
 
 const fold = (direction, num, map) => {

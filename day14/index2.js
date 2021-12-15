@@ -48,4 +48,4 @@ const fs = require("fs");
 const file = fs.readFileSync("./day14/input.txt").toString('utf-8');
 const input = file.split("\n");
 
-console.log(calculate(input[0], input.slice(2).map((rule)=>rule.split(" -> ")), 20));
+console.log(calculate(input[0], input.slice(2).map((rule)=>rule.split(" -> ")), 25));

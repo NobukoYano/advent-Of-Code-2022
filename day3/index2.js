@@ -3,7 +3,7 @@
  * @param {Array<string>} inputs
  * @return {number}
  */
-const task1 = (inputs) => {
+const task2 = (inputs) => {
     const duplicates = [];
     let i = 0;
     while (i < (inputs.length - 2)) {
@@ -36,4 +36,4 @@ const fs = require("fs");
 const file = fs.readFileSync("./day3/input.txt").toString('utf-8');
 const input = file.split("\n")
 
-console.log(task1(input));
+console.log(task2(input));

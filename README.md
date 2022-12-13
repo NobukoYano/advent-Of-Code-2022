@@ -1,6 +1,4 @@
-Advent of Code 2021
+Advent of Code 2022
 
-User: #1709391
-https://adventofcode.com/2021/about
-
+https://adventofcode.com/2022
 

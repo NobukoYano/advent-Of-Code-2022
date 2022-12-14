@@ -1,5 +1,5 @@
 /**
- * day X - first
+ * day X - second
  * @param {Array<string>} inputs
  * @return {number}
  */

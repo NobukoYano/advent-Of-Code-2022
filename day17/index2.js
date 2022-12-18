@@ -1,62 +1,120 @@
-const NUM_ROUND = 20;
+const NUM_ROCKS = 1000;
+
+const rocks = {
+    "0": [[0,2], [0,3], [0,4],[0,5]],
+    "1":[[1,2], [2,3], [1,3], [0,3], [1,4]],
+    "2":[[0,2], [0,3], [0,4], [1,4], [2,4]],
+    "3":[[0,2], [1,2], [2,2], [3,2]],
+    "4":[[0,2], [1,2], [0,3], [1,3]]
+
+}
 /**
  * day X - first
  * @param {Array<string>} inputs
  * @return {number}
  */
 const task2 = (inputs) => {
-    const monkeys = format(inputs);
-    for (let i = 0; i < NUM_ROUND; i++) {
-        Object.entries(monkeys).forEach(([key, value])=>{
-            while (value.items.length) {
-                const item = monkeys[key].items.shift();
-                const newItem = monkeys[key].operation(item);
-                monkeys[key].inspected += 1;
-                if (monkeys[key].test(newItem)) {
-                    monkeys[monkeys[key].true].items.push(newItem);
-                } else {
-                    monkeys[monkeys[key].false].items.push(newItem);
-                }
+    const jetDirections = inputs[0].split("");
+    let count = 0; // number of rocks to be fallen
+    let gasStep = 0; // the step of the jet of fas
+    const chamber = [];
+    let pre = 0;
+    while (count < NUM_ROCKS) {
+        // fall a rock
+        // initial position of the rock
+        let rock = rocks[count % 5].map((dot)=>[dot[0]+3+getHeighest(chamber), dot[1]]);
+        let isRockFallen = false;
+
+        while (!isRockFallen) {
+            // push
+            if (jetDirections[gasStep % jetDirections.length] === "<" && check(rock, chamber, "left")) {
+                rock = rock.map((dot)=>[dot[0], dot[1]-1]);
             }
-        })
-        console.log("### monkeys", i, Object.values(monkeys).map((monkey)=>({items: monkey.items, inspected: monkey.inspected})));
+            if (jetDirections[gasStep % jetDirections.length] === ">" && check(rock, chamber, "right")) {
+                rock = rock.map((dot)=>[dot[0], dot[1]+1]);
+            }
+            gasStep += 1;
+
+            // fall
+            if(check(rock, chamber, "down")) {
+                rock = rock.map((dot)=>[dot[0]-1, dot[1]]);
+            } else {
+                isRockFallen = true;
+            }
+
+        }
+        chamber.push(...rock);
+        count += 1;
+        if (count % 40 === 0) {
+            console.log("#### count, hightest", count, getHeighest(chamber), getHeighest(chamber) - pre);
+            pre = getHeighest(chamber);
+        }
     }
-    const sorted = Object.values(monkeys).map((monkey)=>monkey.inspected).sort((a,b)=>b-a);
-    return sorted[0] *sorted[1];
+    print(chamber);
+    return getHeighest(chamber);
 };
 
-const format = (inputs) => {
-    const result = {};
-    let monkeyId = null;
-    for (const input of inputs) {
-        const [first, second, ...rest] = input.trim().split(" ");
-        if (first === "Monkey") {
-            monkeyId = second.replace(":", "");
-            result[monkeyId] = {inspected: 0}
-        }
-        if (first === "Starting") {
-            result[monkeyId].items = rest.map((item)=>BigInt(item.replace(",", "")));
-        }
-        if (first === "Operation:") {
-            result[monkeyId].operation = (val) => eval(`let old = ${val}; old = old ${rest[2]} ${rest[3]} ;`);
+const getHeighest = (chamber) => chamber.map((dot)=>dot[0]).sort((a,b)=>b-a)[0]+1 || 0;
 
-        }
-        if (first === "Test:") {
-            result[monkeyId].test = (val) => val % BigInt(rest[1]) === 0;
-        }
-        if (first === "If" && second === "true:") {
-            result[monkeyId].true = rest[3];
-        }
-        if (first === "If" && second === "false:") {
-            result[monkeyId].false = rest[3];
-        }
-
+const check = (rock, chamber, direction) => {
+    let newRock = [];
+    // the lowest height is minus
+    switch (direction) {
+        case "down":
+            newRock = rock.map((dot)=>[dot[0]-1, dot[1]]);
+            break;
+        case "left":
+            newRock = rock.map((dot)=>[dot[0], dot[1]-1]);
+            break;
+        case "right":
+            newRock = rock.map((dot)=>[dot[0], dot[1]+1]);
+            break;
+        default:
+            break;
     }
-    return result;
+    const isBottom = newRock.map((dot)=>dot[0]).sort((a,b)=> a-b)[0] < 0;
+    const isMostLeft = newRock.map((dot)=>dot[1]).sort((a,b)=> a-b)[0] < 0;
+    const isMostRight = newRock.map((dot)=>dot[1]).sort((a,b)=> b-a)[0] > 6;
+    const isOverlapped = newRock.some((dot)=>find(dot, chamber));
+    return !isBottom && !isMostLeft && !isMostRight && !isOverlapped
+};
+
+const find = (dot, chamber) => chamber.find((chamberDot)=>chamberDot[0] === dot[0] && chamberDot[1] === dot[1])
+
+const print = (chamber) => {
+    const maxHeight = getHeighest(chamber);
+    for (let i = maxHeight-1; i >= 0; i--) {
+        let row = "|";
+        for (let j = 0; j < 7; j++) {
+            if (find([i, j], chamber)) {
+                row += "X";
+            } else {
+                row += ".";
+            }
+        }
+        row += "|";
+        console.log(row);
+        row = "";
+    }
+    console.log("+-------+");
 }
 
 const fs = require("fs");
-const file = fs.readFileSync("./day11/sample.txt").toString('utf-8');
+const file = fs.readFileSync("./day17/input.txt").toString('utf-8');
 const input = file.split("\n")
 
 console.log(task2(input));
+
+
+// let init = 7;
+// let count = 0;
+// let height = init;
+// const add = [59, 59, 59, 64, 60, 61, 62];
+// const sum = add.reduce((acc, curr)=> acc+curr, 0);
+// while (count <= 1000) { // 1000000000000
+//     height = height + sum;
+//     count += 40 * 7;
+//     console.log("### count, height", count, height);
+// }
+
+// console.log("##### height count", height, count);

@@ -1,4 +1,5 @@
-const NUM_ROCKS = 1000;
+const fs = require('fs');
+const NUM_ROCKS = 1000000000000;
 
 const rocks = {
     "0": [[0,2], [0,3], [0,4],[0,5]],
@@ -17,8 +18,10 @@ const task2 = (inputs) => {
     const jetDirections = inputs[0].split("");
     let count = 0; // number of rocks to be fallen
     let gasStep = 0; // the step of the jet of fas
-    const chamber = [];
+    let chamber = [];
+    const heightDelta = [];
     let pre = 0;
+    console.log("##### count", count, new Date().toISOString());
     while (count < NUM_ROCKS) {
         // fall a rock
         // initial position of the rock
@@ -45,11 +48,20 @@ const task2 = (inputs) => {
         }
         chamber.push(...rock);
         count += 1;
-        if (count % 40 === 0) {
-            console.log("#### count, hightest", count, getHeighest(chamber), getHeighest(chamber) - pre);
-            pre = getHeighest(chamber);
+
+        // if (count % (10091 * 5) === 0) {
+        //     heightDelta.push(getHeighest(chamber) - pre);
+        //     pre = getHeighest(chamber);
+        // }
+        if (count % (10091 * 5) === 0) {
+            console.log("##### count", count, new Date().toISOString());
         }
+
+        // remove items if whole the horizontal line is blocked
+        chamber = cleanUp(chamber);
     }
+
+    writeFile(JSON.stringify(heightDelta, null, 4), "delta.txt");
     print(chamber);
     return getHeighest(chamber);
 };
@@ -94,12 +106,44 @@ const print = (chamber) => {
         }
         row += "|";
         console.log(row);
+        if (row === "|.......|") {
+            break;
+        }
         row = "";
     }
     console.log("+-------+");
 }
 
-const fs = require("fs");
+const writeFile = (data, filename) => {
+    fs.writeFile(filename, data, (err) => {
+        if (err)
+            console.log(err);
+        else {
+            console.log("File written successfully\n");
+        }
+    });
+}
+
+const cleanUp = (chamber) => {
+    const sortedChamber = chamber.sort((a, b) => b[0] - a[0]);
+    const cleanedChamber = [sortedChamber[0]];
+    let row = sortedChamber[0][0];
+    let rowCount = 1;
+    for (let i = 1; i < sortedChamber.length; i++) {
+        if (row === sortedChamber[i][0]) {
+            rowCount += 1;
+        } else {
+            rowCount = 1;
+            row = sortedChamber[i][0];
+        }
+        cleanedChamber.push(sortedChamber[i])
+        if (rowCount >= 7) {
+            break;
+        }
+    }
+    return cleanedChamber;
+}
+
 const file = fs.readFileSync("./day17/input.txt").toString('utf-8');
 const input = file.split("\n")
 

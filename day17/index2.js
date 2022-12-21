@@ -1,5 +1,5 @@
 const fs = require('fs');
-const NUM_ROCKS = 1000000000000;
+const NUM_ROCKS = 10000000;
 
 const rocks = {
     "0": [[0,2], [0,3], [0,4],[0,5]],
@@ -30,31 +30,30 @@ const task2 = (inputs) => {
 
         while (!isRockFallen) {
             // push
-            if (jetDirections[gasStep % jetDirections.length] === "<" && check(rock, chamber, "left")) {
-                rock = rock.map((dot)=>[dot[0], dot[1]-1]);
+            if (jetDirections[gasStep % jetDirections.length] === "<") {
+                rock = check(rock, chamber, "left");
             }
-            if (jetDirections[gasStep % jetDirections.length] === ">" && check(rock, chamber, "right")) {
-                rock = rock.map((dot)=>[dot[0], dot[1]+1]);
+            if (jetDirections[gasStep % jetDirections.length] === ">") {
+                rock = check(rock, chamber, "right");
             }
             gasStep += 1;
 
             // fall
-            if(check(rock, chamber, "down")) {
-                rock = rock.map((dot)=>[dot[0]-1, dot[1]]);
-            } else {
+            let preRock = rock;
+            rock = check(rock, chamber, "down");
+
+            // The rock was not moved
+            if(preRock.every(([a,b])=>rock.find(([x,y])=>a === x && b === y))) {
                 isRockFallen = true;
             }
-
         }
         chamber.push(...rock);
         count += 1;
 
-        // if (count % (10091 * 5) === 0) {
-        //     heightDelta.push(getHeighest(chamber) - pre);
-        //     pre = getHeighest(chamber);
-        // }
-        if (count % (10091 * 5) === 0) {
-            console.log("##### count", count, new Date().toISOString());
+        if (count % (jetDirections.length * 5) === 0) {
+            console.log("##### count", count, new Date().toISOString(), getHeighest(chamber) - pre);
+            heightDelta.push(getHeighest(chamber) - pre);
+            pre = getHeighest(chamber);
         }
 
         // remove items if whole the horizontal line is blocked
@@ -88,7 +87,7 @@ const check = (rock, chamber, direction) => {
     const isMostLeft = newRock.map((dot)=>dot[1]).sort((a,b)=> a-b)[0] < 0;
     const isMostRight = newRock.map((dot)=>dot[1]).sort((a,b)=> b-a)[0] > 6;
     const isOverlapped = newRock.some((dot)=>find(dot, chamber));
-    return !isBottom && !isMostLeft && !isMostRight && !isOverlapped
+    return !isBottom && !isMostLeft && !isMostRight && !isOverlapped ? newRock : rock;
 };
 
 const find = (dot, chamber) => chamber.find((chamberDot)=>chamberDot[0] === dot[0] && chamberDot[1] === dot[1])
